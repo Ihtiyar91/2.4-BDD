@@ -3,7 +3,6 @@ package test;
 import data.DataHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import page.CardsPage;
 import page.DashboardPage;
 import page.LoginPage;
 import page.TransferPage;
@@ -25,17 +24,18 @@ class MoneyTransferTest {
 
     @Test
     void shouldTransferMoneyBetweenOwnCards() {
-        var cardsPage = new CardsPage();
+        var dashboardPage =new DashboardPage();
         var cardInfoFirst = DataHelper.getFirstCard();
-        var initialBalanceFirst = new DashboardPage().getCardBalance(cardInfoFirst);
+        var initialBalanceFirst = dashboardPage.getCardBalance(cardInfoFirst);
         var cardInfoSecond = DataHelper.getSecondCard();
-        var initialBalanceSecond = new DashboardPage().getCardBalance(cardInfoSecond);
+        var initialBalanceSecond = dashboardPage.getCardBalance(cardInfoSecond);
         int sum = 500;
-        cardsPage.topUpFirstCard();
+        dashboardPage.topUpFirstCard();
         var transferPage = new TransferPage();
-        transferPage.topUp(sum);
-        var balanceFirst = new DashboardPage().getCardBalance(cardInfoFirst);
-        var balanceSecond = new DashboardPage().getCardBalance(cardInfoSecond);
+        var cardInfo = DataHelper.getSecondCard();
+        transferPage.topUp(cardInfo,sum);
+        var balanceFirst =  dashboardPage.getCardBalance(cardInfoFirst);
+        var balanceSecond =  dashboardPage.getCardBalance(cardInfoSecond);
         int expectedFirst = initialBalanceFirst + sum;
         int expectedSecond = initialBalanceSecond - sum;
         assertEquals(expectedFirst, balanceFirst);
@@ -44,17 +44,18 @@ class MoneyTransferTest {
 
     @Test
     void shouldTransferFromFirstToSecondCard() {
-        var cardsPage = new CardsPage();
+        var dashboardPage =new DashboardPage();
         var cardInfoFirst = DataHelper.getFirstCard();
-        var initialBalanceFirst = new DashboardPage().getCardBalance(cardInfoFirst);
+        var initialBalanceFirst = dashboardPage.getCardBalance(cardInfoFirst);
         var cardInfoSecond = DataHelper.getSecondCard();
-        var initialBalanceSecond = new DashboardPage().getCardBalance(cardInfoSecond);
+        var initialBalanceSecond = dashboardPage.getCardBalance(cardInfoSecond);
         int sum = 1000;
-        cardsPage.topUpSecondCard();
+        dashboardPage.topUpSecondCard();
         var transferPage = new TransferPage();
-        transferPage.topUp(sum);
-        var balanceFirst = new DashboardPage().getCardBalance(cardInfoFirst);
-        var balanceSecond = new DashboardPage().getCardBalance(cardInfoSecond);
+        var cardInfo = DataHelper.getFirstCard();
+        transferPage.topUp(cardInfo,sum);
+        var balanceFirst = dashboardPage.getCardBalance(cardInfoFirst);
+        var balanceSecond = dashboardPage.getCardBalance(cardInfoSecond);
         int expectedFirst = initialBalanceFirst - sum;
         int expectedSecond = initialBalanceSecond + sum;
         assertEquals(expectedFirst, balanceFirst);
@@ -63,21 +64,23 @@ class MoneyTransferTest {
 
     @Test
     void shouldTransferAmountExceedingBalance() {
-        var cardsPage = new CardsPage();
+        var dashboardPage =new DashboardPage();
         int sum = 50000;
-        cardsPage.topUpSecondCard();
+        dashboardPage.topUpSecondCard();
         var transferPage = new TransferPage();
-        transferPage.topUp(sum);
+        var cardInfo = DataHelper.getSecondCard();
+        transferPage.topUp(cardInfo,sum);
         transferPage.getErrorNotMoney();
     }
 
     @Test
     void shouldTransferZeroRub() {
-        var cardsPage = new CardsPage();
+        var dashboardPage =new DashboardPage();
         int sum = 0;
-        cardsPage.topUpSecondCard();
+        dashboardPage.topUpSecondCard();
         var transferPage = new TransferPage();
-        transferPage.topUp(sum);
+        var cardInfo = DataHelper.getSecondCard();
+        transferPage.topUp(cardInfo,sum);
         transferPage.getErrorSumZero();
     }
 }

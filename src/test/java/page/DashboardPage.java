@@ -35,4 +35,16 @@ public class DashboardPage {
     var value = text.substring(start + balanceStart.length(), finish);
     return Integer.parseInt(value);
   }
+  private ElementsCollection buttons = $$("[data-test-id=action-deposit] ");
+  private SelenideElement buttonPayToFirstCard = buttons.first();
+  private SelenideElement buttonPayToSecondCard = buttons.last();
+
+  public void topUpFirstCard() {
+    buttonPayToFirstCard.click();
+  }
+
+  public void topUpSecondCard() {
+    buttonPayToSecondCard.click();
+  }
+
 }
